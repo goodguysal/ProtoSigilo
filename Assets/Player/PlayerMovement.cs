@@ -27,9 +27,9 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        // =========================
+        
         // SALTO
-        // =========================
+        
 
         if (Keyboard.current.spaceKey.wasPressedThisFrame && puedeSaltar)
         {
@@ -38,9 +38,9 @@ public class PlayerMovement : MonoBehaviour
         }
 
 
-        // =========================
+        
         // CAMARA / MOUSE
-        // =========================
+       
 
         Vector2 mouse = Mouse.current.delta.ReadValue();
 
@@ -66,9 +66,9 @@ public class PlayerMovement : MonoBehaviour
         );
 
 
-        // =========================
+        
         // ESC
-        // =========================
+        
 
         if (Keyboard.current.escapeKey.wasPressedThisFrame)
         {
@@ -84,9 +84,9 @@ public class PlayerMovement : MonoBehaviour
         float vertical = 0f;
 
 
-        // =========================
+        
         // WASD
-        // =========================
+        
 
         if (Keyboard.current.aKey.isPressed)
             horizontal = -1f;
@@ -101,9 +101,9 @@ public class PlayerMovement : MonoBehaviour
             vertical = -1f;
 
 
-        // =========================
+        
         // MOVIMIENTO SEGUN LA CAMARA
-        // =========================
+        
 
         Vector3 adelante = camara.forward;
         Vector3 derecha = camara.right;
