@@ -54,6 +54,7 @@ public class Enemigo : MonoBehaviour
 
     private bool esperando = false;
     private bool jugadorDetectado = false;
+    private bool jugadorEscondido = false;
 
     void Start()
     {
@@ -89,7 +90,7 @@ public class Enemigo : MonoBehaviour
     // ==========================================
     // DETECTAR JUGADOR
     // ==========================================
-
+   
     void DetectarJugador()
     {
         // PATRULLANDO
@@ -103,6 +104,22 @@ public class Enemigo : MonoBehaviour
 
                 return;
             }
+        }
+        if (jugadorEscondido)
+        {
+            temporizadorAlerta += Time.deltaTime;
+
+            if (temporizadorAlerta >= tiempoAlerta)
+            {
+                estadoActual = EstadoEnemigo.Patrullando;
+                temporizadorAlerta = 0f;
+                jugadorDetectado = false;
+                esperando = false;
+                temporizadorEspera = 0f;
+                puntoActual = 0;
+            }
+
+            return;
         }
 
         // ALERTA
@@ -539,5 +556,21 @@ public class Enemigo : MonoBehaviour
                 estadoActual == EstadoEnemigo.Persiguiendo
             );
         }
+    }
+    public void EsconderJugador()
+    {
+        jugadorEscondido = true;
+
+        estadoActual = EstadoEnemigo.Alerta;
+        temporizadorAlerta = 0f;
+        jugadorDetectado = false;
+    }
+
+    public void JugadorSalioDelCasillero()
+    {
+        jugadorEscondido = false;
+
+        temporizadorAlerta = 0f;
+        jugadorDetectado = false;
     }
 }

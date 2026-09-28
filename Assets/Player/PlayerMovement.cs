@@ -11,7 +11,7 @@ public class PlayerMovement : MonoBehaviour
     public Transform camara;
     public float sensibilidad = 200f;
     public float limiteVertical = 80f;
-
+    public bool movimientoBloqueado = false;
     private Rigidbody rb;
     private bool puedeSaltar;
 
@@ -84,9 +84,12 @@ public class PlayerMovement : MonoBehaviour
         float vertical = 0f;
 
 
-        
+
         // WASD
-        
+        if (movimientoBloqueado)
+        {
+            return;
+        }
 
         if (Keyboard.current.aKey.isPressed)
             horizontal = -1f;
