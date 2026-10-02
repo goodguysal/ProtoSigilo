@@ -18,7 +18,7 @@ public class LookAtPlayer : MonoBehaviour
         if (mainCameraTransform != null)
         {
             // Hace que el texto mire en la misma dirección que la cámara,
-            // evitando el efecto "espejo" o que se vea al revés.
+            
             transform.rotation = Quaternion.LookRotation(transform.position - mainCameraTransform.position);
         }
     }

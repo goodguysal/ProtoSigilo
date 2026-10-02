@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public enum EstadoEnemigo
 {
@@ -47,6 +48,9 @@ public class Enemigo : MonoBehaviour
 
     // VARIABLES INTERNAS
     private Rigidbody rb;
+    //ATRAPADO PANTALLA
+    public GameObject pantallaAtrapado;
+    public TMPro.TMP_Text textoAtrapado;
 
     private int puntoActual = 0;
     private float temporizadorEspera = 0f;
@@ -55,6 +59,9 @@ public class Enemigo : MonoBehaviour
     private bool esperando = false;
     private bool jugadorDetectado = false;
     private bool jugadorEscondido = false;
+    //ATRAPADO PANTALLA
+    private CanvasGroup canvasAtrapado;
+    private bool jugadorAtrapado = false;
 
     void Start()
     {
@@ -65,6 +72,15 @@ public class Enemigo : MonoBehaviour
             rb.constraints = RigidbodyConstraints.FreezeRotation;
             rb.interpolation = RigidbodyInterpolation.Interpolate;
         }
+        canvasAtrapado = pantallaAtrapado.GetComponent<CanvasGroup>();
+
+        if (canvasAtrapado == null)
+        {
+            canvasAtrapado = pantallaAtrapado.AddComponent<CanvasGroup>();
+        }
+
+        canvasAtrapado.alpha = 0f;
+        textoAtrapado.gameObject.SetActive(false);
     }
 
     void Update()
@@ -449,19 +465,60 @@ public class Enemigo : MonoBehaviour
 
     void MatarJugador()
     {
+        if (jugadorAtrapado)
+            return;
+
+        jugadorAtrapado = true;
+
+        StartCoroutine(MostrarAtrapado());
+    }
+    IEnumerator MostrarAtrapado()
+
+    {
+        textoAtrapado.text = "Fuiste atrapado";
+        textoAtrapado.gameObject.SetActive(true);
+
+        // Aparece la pantalla negra
+        float tiempoFade = 0.5f;
+        float tiempo = 0f;
+
+        while (tiempo < tiempoFade)
+        {
+            tiempo += Time.deltaTime;
+            canvasAtrapado.alpha = tiempo / tiempoFade;
+
+            yield return null;
+        }
+
+        canvasAtrapado.alpha = 1f;
+
+        // Espera con la pantalla negra
+        yield return new WaitForSeconds(2f);
+
+        // Respawn
         jugador.position = checkpointJugador.position;
 
         estadoActual = EstadoEnemigo.Patrullando;
 
+        // Reiniciar detección
         jugadorDetectado = false;
+        tiempoAlerta = 0f;
 
-        puntoActual = 0;
+        // Ocultar pantalla
+        tiempo = 0f;
 
-        temporizadorAlerta = 0f;
+        while (tiempo < tiempoFade)
+        {
+            tiempo += Time.deltaTime;
+            canvasAtrapado.alpha = 1f - (tiempo / tiempoFade);
 
-        esperando = false;
+            yield return null;
+        }
 
-        temporizadorEspera = 0f;
+        canvasAtrapado.alpha = 0f;
+        textoAtrapado.gameObject.SetActive(false);
+
+        jugadorAtrapado = false;
     }
 
     // ==========================================
